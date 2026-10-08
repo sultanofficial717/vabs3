@@ -1,0 +1,28 @@
+VINELAND-3 ASSESSMENT SYSTEM
+==============================
+Final Version - Official Pearson Norms
+Developed for Academic Research Use
+
+HOW TO RUN:
+1. Extract this folder to your Desktop
+2. Double-click START_APP.bat
+3. If Windows shows a blue security warning:
+   Click "More info" then "Run anyway"
+   (Normal for unsigned academic software)
+4. Wait 10-15 seconds
+   Your browser opens automatically
+
+SCORING INFORMATION:
+Scores are calculated using official Pearson
+VABS-3 normative tables (Appendix B).
+Used under departmental license.
+
+REQUIREMENTS:
+- Internet connection for AI interpretation
+- Google Chrome or Microsoft Edge recommended
+
+IMPORTANT DISCLAIMER:
+This system is for academic research purposes.
+All AI-generated narratives require review and
+countersignature by a licensed clinician before
+any clinical or diagnostic use.
