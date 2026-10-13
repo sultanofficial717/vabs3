@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autism Lens — Clinical Decision-Support SaaS</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFD900'/><text x='50%' y='68%' font-size='55' font-weight='bold' font-family='sans-serif' text-anchor='middle' fill='%23151515'>AL</text></svg>">
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- ======================================================================
+         PERSISTENT DARK SIDEBAR
+         ====================================================================== -->
+    <aside id="app-sidebar" class="sidebar">
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <a href="#" class="brand-wrapper" onclick="App.navigateTo('overview'); return false;">
+          <div class="brand-badge">AL</div>
+          <div class="brand-text">
+            <h1>Autism Lens</h1>
+            <span>Clinical Support</span>
+          </div>
+        </a>
+        <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" title="Toggle Sidebar">
+          ◂
+        </button>
+      </div>
+
+      <!-- Quick Search -->
+      <div class="sidebar-search-box">
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="global-search-input" placeholder="Search assessments..." autocomplete="off">
+          <span class="search-kbd">⌘K</span>
+        </div>
+      </div>
+
+      <!-- Main Navigation -->
+      <div class="nav-section">
+        <div class="nav-section-title">Main Workspace</div>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-item-btn active" data-view="overview">
+              <span class="nav-icon">📊</span>
+              <span>Overview</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-view="new-assessment">
+              <span class="nav-icon">➕</span>
+              <span>New Assessment</span>
+              <span class="nav-badge-pill">Step-by-Step</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-view="history">
+              <span class="nav-icon">📁</span>
+              <span>Assessments History</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-view="patients">
+              <span class="nav-icon">👥</span>
+              <span>Patients</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-view="reports">
+              <span class="nav-icon">📑</span>
+              <span>Reports</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-view="analytics">
+              <span class="nav-icon">📈</span>
+              <span>Analytics</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Secondary Navigation -->
+      <div class="nav-section" style="margin-top: 0.5rem;">
+        <div class="nav-section-title">System & Tools</div>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-item-btn" data-view="settings">
+              <span class="nav-icon">⚙️</span>
+              <span>Settings</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-view="help">
+              <span class="nav-icon">📖</span>
+              <span>Help & Norms Docs</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Clinician Profile Footer -->
+      <div class="sidebar-footer">
+        <div class="user-avatar-circle">TR</div>
+        <div class="user-details">
+          <div class="user-name">Dr. Talha Rehman</div>
+          <div class="user-role">
+            <span class="online-dot"></span> Evaluator • Active
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ======================================================================
+         MAIN CONTENT AREA
+         ====================================================================== -->
+    <div class="main-wrapper">
+
+      <!-- Top Header -->
+      <header class="app-top-header">
+        <div class="header-left">
+          <button id="mobile-menu-btn" class="mobile-menu-trigger">☰</button>
+          <div class="view-breadcrumb">
+            <span class="crumb-parent">Autism Lens</span>
+            <span class="crumb-sep">/</span>
+            <span id="crumb-current-title" class="crumb-current">Overview</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="system-pill">
+            <span class="pulse-indicator"></span>
+            <span id="top-system-status">Pearson VABS-3 Active • API Connected</span>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="App.navigateTo('new-assessment');">
+            ➕ New Assessment
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Workspace Views -->
+      <main class="main-workspace">
+
+        <!-- ==================================================================
+             VIEW 1: OVERVIEW DASHBOARD
+             ================================================================== -->
+        <section id="view-overview" class="view-panel active">
+          <!-- Greeting Bar -->
+          <div class="dashboard-greeting-bar">
+            <div class="greeting-text">
+              <h2>Welcome back, Dr. Clinician</h2>
+              <p>Manage assessments, review normative scoring, and generate publication-grade clinical reports.</p>
+            </div>
+            <div class="greeting-actions">
+              <button class="btn btn-primary" onclick="App.navigateTo('new-assessment');">
+                🚀 Start New Assessment
+              </button>
+              <button class="btn btn-outline" onclick="App.startDocumentIntake();">
+                📁 Upload Document
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 KPI Metrics -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">Total Assessments</span>
+                <div class="kpi-icon-wrap yellow">📋</div>
+              </div>
+              <div class="kpi-val" id="kpi-total-assessments">—</div>
+              <div class="kpi-footer">Tracked in persistent clinical registry</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">Completed Evaluations</span>
+                <div class="kpi-icon-wrap">✓</div>
+              </div>
+              <div class="kpi-val" id="kpi-completed-assessments">—</div>
+              <div class="kpi-footer">Scored via Pearson Appendix B norms</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">Reports Generated</span>
+                <div class="kpi-icon-wrap">📑</div>
+              </div>
+              <div class="kpi-val" id="kpi-reports-count">—</div>
+              <div class="kpi-footer">Evidence-grounded PDF exports</div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-header">
+                <span class="kpi-title">Awaiting Review</span>
+                <div class="kpi-icon-wrap">⏳</div>
+              </div>
+              <div class="kpi-val" id="kpi-awaiting-review">—</div>
+              <div class="kpi-footer">Requires clinician input verification</div>
+            </div>
+          </div>
+
+          <!-- Two-Column Layout -->
+          <div class="dashboard-grid-2col">
+            <!-- Left Column: Recent Assessments -->
+            <div>
+              <div class="card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">Recent Assessments</h3>
+                    <p class="card-subtitle">Latest evaluations processed through Autism Lens</p>
+                  </div>
+                  <div style="display: flex; gap: 0.5rem;">
+                    <select id="overview-status-filter" style="padding: 0.35rem 0.65rem; font-size: 0.775rem;">
+                      <option value="all">All Statuses</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Awaiting Review">Awaiting Review</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="data-table-wrapper">
+                  <table class="table-clean">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Patient</th>
+                        <th>Age</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="overview-recent-tbody">
+                      <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                          Loading assessments...
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Domain Score Benchmarks -->
+              <div class="card">
+                <h3 class="card-title">Vineland-3 Domain Population Benchmarks</h3>
+                <p class="card-subtitle">Standard scores scale Mean = 100, SD = 15. Scores below 70 indicate adaptive deficits.</p>
+                <div id="overview-domain-benchmarks" style="margin-top: 1rem;">
+                  <!-- Dynamic benchmark bars -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Quick Actions & Clinical Activity -->
+            <div>
+              <!-- Quick Actions Card -->
+              <div class="card">
+                <h3 class="card-title" style="margin-bottom: 0.85rem;">Quick Actions</h3>
+                <div class="quick-action-item" onclick="App.startManualIntake();">
+                  <div class="quick-action-icon">✍️</div>
+                  <div class="quick-action-info">
+                    <h4>Start Manual Entry</h4>
+                    <p>Enter patient info and scores directly</p>
+                  </div>
+                </div>
+                <div class="quick-action-item" onclick="App.startDocumentIntake();">
+                  <div class="quick-action-icon">📄</div>
+                  <div class="quick-action-info">
+                    <h4>Upload Evaluation PDF</h4>
+                    <p>Extract form scores with pypdf parser</p>
+                  </div>
+                </div>
+                <div class="quick-action-item" onclick="App.startDocumentIntake();">
+                  <div class="quick-action-icon">📷</div>
+                  <div class="quick-action-info">
+                    <h4>Upload Photographed Sheet</h4>
+                    <p>OpenCV deskewing & adaptive binarization</p>
+                  </div>
+                </div>
+                <div class="quick-action-item" onclick="App.navigateTo('reports');">
+                  <div class="quick-action-icon">📥</div>
+                  <div class="quick-action-info">
+                    <h4>Download PDF Reports</h4>
+                    <p>Access generated clinical summaries</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Clinical Safeguard Box -->
+              <div class="safeguard-banner-card">
+                <span style="font-size: 1.1rem; line-height: 1;">⚖️</span>
+                <div>
+                  <strong>Clinical Decision-Support Notice:</strong>
+                  Autism Lens provides normative descriptive analyses and pattern recognitions grounded in DSM-5-TR criteria. Automated scores do not replace a qualified clinical diagnosis.
+                </div>
+              </div>
+
+              <!-- Assessment Activity Timeline -->
+              <div class="card">
+                <h3 class="card-title" style="margin-bottom: 1rem;">Clinical Activity Log</h3>
+                <div class="activity-feed" id="overview-activity-feed">
+                  <div class="activity-item">
+                    <div class="activity-bullet"></div>
+                    <div>
+                      <div class="activity-desc"><strong>System Initialized</strong>: Official Pearson VABS-3 normative lookup tables active.</div>
+                      <div class="activity-time">Session Started</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================================================================
+             VIEW 2: NEW ASSESSMENT (GUIDED 8-STEP WORKFLOW)
+             ================================================================== -->
+        <section id="view-new-assessment" class="view-panel">
+          <div class="card" style="padding: 1.5rem 1.75rem;">
+            <!-- Stepper Navigation -->
+            <div class="wizard-header-nav">
+              <div class="wizard-step-node active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-title-text">Patient Info</div>
+              </div>
+              <div class="wizard-step-node" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-title-text">Input Method</div>
+              </div>
+              <div class="wizard-step-node" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-title-text">Upload Doc</div>
+              </div>
+              <div class="wizard-step-node" data-step="4">
+                <div class="step-number">4</div>
+                <div class="step-title-text">Review Data</div>
+              </div>
+              <div class="wizard-step-node" data-step="5">
+                <div class="step-number">5</div>
+                <div class="step-title-text">Verify Inputs</div>
+              </div>
+              <div class="wizard-step-node" data-step="6">
+                <div class="step-number">6</div>
+                <div class="step-title-text">Scoring</div>
+              </div>
+              <div class="wizard-step-node" data-step="7">
+                <div class="step-number">7</div>
+                <div class="step-title-text">Results & Maps</div>
+              </div>
+              <div class="wizard-step-node" data-step="8">
+                <div class="step-number">8</div>
+                <div class="step-title-text">Report Export</div>
+              </div>
+            </div>
+
+            <!-- STEP 1: PATIENT DEMOGRAPHICS -->
+            <div id="wizard-step-1" class="wizard-subpanel">
+              <div class="card-header-flex" style="margin-bottom: 0.5rem;">
+                <div>
+                  <h3 class="card-title">Step 1 — Patient Demographics & Intake</h3>
+                  <p class="card-subtitle">Enter basic patient details required for normative age-banding and report generation.</p>
+                </div>
+                <button type="button" class="btn btn-outline btn-sm" onclick="Wizard.loadSamplePatient();" title="Pre-fill with standardized sample patient profile for demonstration">
+                  ⚡ Pre-fill Sample Profile
+                </button>
+              </div>
+
+              <div class="form-grid-2" style="margin-top: 1.25rem;">
+                <div class="form-group">
+                  <label for="wiz-patient-name">Patient Name or De-Identified ID <span class="req-star">*</span></label>
+                  <input type="text" id="wiz-patient-name" placeholder="e.g. PT-84291 or Leo Vance" value="PT-84291">
+                  <span id="wiz-patient-name-err" class="form-error-text" style="display: none;">Patient identifier is required.</span>
+                </div>
+                <div class="form-group">
+                  <label for="wiz-patient-sex">Sex</label>
+                  <select id="wiz-patient-sex">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="wiz-patient-age-y">Chronological Age (Years) <span class="req-star">*</span></label>
+                  <input type="number" id="wiz-patient-age-y" min="0" max="90" value="7">
+                  <span id="wiz-patient-age-err" class="form-error-text" style="display: none;">Age must be between 0 and 90 years.</span>
+                </div>
+                <div class="form-group">
+                  <label for="wiz-patient-age-m">Chronological Age (Months, 0–11)</label>
+                  <input type="number" id="wiz-patient-age-m" min="0" max="11" value="6">
+                  <span id="wiz-patient-months-err" class="form-error-text" style="display: none;">Months must be between 0 and 11.</span>
+                </div>
+                <div class="form-group">
+                  <label for="wiz-respondent">Informant / Respondent Name</label>
+                  <input type="text" id="wiz-respondent" placeholder="e.g. Elena Vance" value="Elena Vance">
+                </div>
+                <div class="form-group">
+                  <label for="wiz-relationship">Relationship to Patient</label>
+                  <input type="text" id="wiz-relationship" placeholder="e.g. Biological Mother" value="Mother">
+                </div>
+                <div class="form-group">
+                  <label for="wiz-test-date">Assessment Date</label>
+                  <input type="date" id="wiz-test-date">
+                </div>
+                <div class="form-group full">
+                  <label for="wiz-referral">Reason for Referral & Clinical Notes</label>
+                  <textarea id="wiz-referral" rows="2" placeholder="Primary concerns, behavioral observations, or referral background...">Evaluation of social-communication delay, transition rigidity, and adaptive behavior profile.</textarea>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
+                <button class="btn btn-primary" onclick="Wizard.nextFromStep1();">
+                  Next: Choose Input Method →
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 2: CHOOSE INPUT METHOD -->
+            <div id="wizard-step-2" class="wizard-subpanel" style="display: none;">
+              <h3 class="card-title">Step 2 — Choose Clinical Input Method</h3>
+              <p class="card-subtitle">Select how the patient's evaluation responses and scores will be provided.</p>
+
+              <div class="choice-cards-grid">
+                <div id="choice-card-manual" class="choice-selection-card selected" onclick="Wizard.selectMethod('manual');">
+                  <div class="choice-card-icon">✍️</div>
+                  <div class="choice-card-title">Enter Information Manually</div>
+                  <div class="choice-card-desc">Directly fill out the subdomain raw scores and maladaptive behaviors in a structured clinical form.</div>
+                </div>
+
+                <div id="choice-card-doc" class="choice-selection-card" onclick="Wizard.selectMethod('document');">
+                  <div class="choice-card-icon">📄</div>
+                  <div class="choice-card-title">Import From a Document</div>
+                  <div class="choice-card-desc">Upload a scanned evaluation PDF or sheet photograph for automated extraction and interactive review.</div>
+                </div>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <button class="btn btn-outline" onclick="Wizard.goToStep(1);">← Back</button>
+                <button class="btn btn-primary" onclick="Wizard.nextFromStep2();">Continue →</button>
+              </div>
+            </div>
+
+            <!-- STEP 3: DOCUMENT UPLOAD -->
+            <div id="wizard-step-3" class="wizard-subpanel" style="display: none;">
+              <h3 class="card-title">Step 3 — Upload Evaluation Document or Sheet Photo</h3>
+              <p class="card-subtitle">Upload a completed Vineland-3 evaluation report (PDF) or photographed page (PNG, JPG).</p>
+
+              <div id="wiz-dropzone" class="modern-dropzone">
+                <div class="dropzone-big-icon">📁</div>
+                <div class="dropzone-main-text">Drag and drop clinical file here, or click to browse</div>
+                <div class="dropzone-sub-text">Supported formats: PDF, PNG, JPG, JPEG (Max file size: 25MB)</div>
+                <input type="file" id="wiz-file-input" accept=".pdf,.png,.jpg,.jpeg" style="display: none;">
+              </div>
+
+              <div id="wiz-upload-status" style="display: none; padding: 0.85rem; border-radius: var(--radius-md); background-color: var(--accent-yellow-soft); margin-bottom: 1rem;"></div>
+              <div id="wiz-preview-file"></div>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <button class="btn btn-outline" onclick="Wizard.goToStep(2);">← Back</button>
+                <button id="wiz-btn-step3-next" class="btn btn-primary" disabled onclick="Wizard.goToStep(4);">
+                  Next: Review Extracted Data →
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 4: EXTRACTED DATA REVIEW -->
+            <div id="wizard-step-4" class="wizard-subpanel" style="display: none;">
+              <h3 class="card-title">Step 4 — Review & Correct Extracted Clinical Data</h3>
+              <p class="card-subtitle">Carefully review extracted scores. You may adjust any value before proceeding to formal verification.</p>
+
+              <div id="wiz-review-container">
+                <!-- Dynamically rendered review form -->
+              </div>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <button class="btn btn-outline" onclick="Wizard.goToStep(Wizard.intakeMethod === 'document' ? 3 : 2);">← Back</button>
+                <button class="btn btn-primary" onclick="Wizard.nextFromStep4();">
+                  Next: Proceed to Verification Gate →
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 5: INPUT VERIFICATION GATE -->
+            <div id="wizard-step-5" class="wizard-subpanel" style="display: none;">
+              <h3 class="card-title">Step 5 — Pre-Scoring Input Verification Gate</h3>
+              <p class="card-subtitle">Verify that all mandatory patient fields and scores are within acceptable clinical limits.</p>
+
+              <div id="wiz-verification-summary">
+                <!-- Verification Checklist Table -->
+              </div>
+
+              <div id="wiz-verification-errors" style="display: none; margin: 1.25rem 0;"></div>
+
+              <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+                <button class="btn btn-outline" onclick="Wizard.goToStep(4);">← Edit Inputs</button>
+                <button class="btn btn-primary" onclick="Wizard.confirmVerification();">
+                  ✓ Confirm Verified Inputs & Proceed to Scoring →
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 6: SCORING -->
+            <div id="wizard-step-6" class="wizard-subpanel" style="display: none; text-align: center; padding: 2.5rem 1.5rem;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">⚙️</div>
+              <h3 class="card-title">Step 6 — Execute Autism Scoring Engine</h3>
+              <p class="card-subtitle" style="max-width: 600px; margin: 0.5rem auto 1.5rem;">
+                Inputs have been verified. Click below to execute the deterministic Pearson VABS-3 normative lookup engine (Appendix B) and the DSM-5-TR ASD Pattern Engine.
+              </p>
+
+              <button id="wiz-run-scoring-btn" class="btn btn-primary btn-lg" onclick="Wizard.runScoring();">
+                🚀 Run Authoritative Scoring Engine
+              </button>
+
+              <div id="wiz-scoring-status" style="display: none; margin-top: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto;"></div>
+            </div>
+
+            <!-- STEP 7: RESULTS & VISUALIZATIONS -->
+            <div id="wizard-step-7" class="wizard-subpanel" style="display: none;">
+              <div class="card-header-flex">
+                <div>
+                  <h3 class="card-title">Step 7 — Pearson VABS-3 Scoring Results & Clinical Maps</h3>
+                  <p class="card-subtitle">Normative Standard Scores, percentile bands, subdomain profiles, and DSM-5-TR patterns.</p>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn btn-outline btn-sm" onclick="Wizard.goToStep(5);">← Edit Inputs</button>
+                  <button class="btn btn-primary btn-sm" onclick="Wizard.goToStep(8);">
+                    Next: Generate Clinical Report →
+                  </button>
+                </div>
+              </div>
+
+              <div id="wiz-results-container">
+                <!-- Dynamically rendered visualizations -->
+              </div>
+            </div>
+
+            <!-- STEP 8: REPORT GENERATION & DOWNLOAD -->
+            <div id="wizard-step-8" class="wizard-subpanel" style="display: none;">
+              <div class="card-header-flex">
+                <div>
+                  <h3 class="card-title">Step 8 — Clinical Report Preview & PDF Export</h3>
+                  <p class="card-subtitle">Evidence-grounded 8-section narrative interpretation and publication-grade ReportLab PDF.</p>
+                </div>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <a id="wiz-download-pdf-btn" class="btn btn-primary btn-sm" style="display: none;" target="_blank">
+                    📥 Download PDF Report
+                  </a>
+                  <button id="wiz-print-report-btn" class="btn btn-outline btn-sm" style="display: none;" onclick="Wizard.printReport();">
+                    🖨️ Print
+                  </button>
+                  <button id="wiz-copy-report-btn" class="btn btn-outline btn-sm" style="display: none;" onclick="Wizard.copyReportText();">
+                    📋 Copy Text
+                  </button>
+                  <button class="btn btn-outline btn-sm" onclick="App.navigateTo('overview');">
+                    Return to Overview
+                  </button>
+                </div>
+              </div>
+
+              <div id="wiz-report-action-box" style="text-align: center; padding: 2rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: #F9FAFB; margin-bottom: 1.5rem;">
+                <button id="wiz-build-report-btn" class="btn btn-primary btn-lg" onclick="Wizard.generateReport();">
+                  📝 Synthesize & Build PDF Report
+                </button>
+                <div id="wiz-report-status" style="display: none; margin-top: 1rem;"></div>
+              </div>
+
+              <div id="wiz-report-preview-box" class="report-paper-preview" style="display: none;">
+                <!-- Narrative Preview Content -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================================================================
+             VIEW 3: ASSESSMENTS HISTORY
+             ================================================================== -->
+        <section id="view-history" class="view-panel">
+          <div class="card">
+            <div class="card-header-flex">
+              <div>
+                <h3 class="card-title">Assessments History Directory</h3>
+                <p class="card-subtitle">Complete registry of saved clinical evaluations and processing states.</p>
+              </div>
+              <div style="display: flex; gap: 0.75rem;">
+                <input type="text" id="history-search-input" placeholder="Search by ID or Patient..." style="width: 220px; padding: 0.45rem 0.75rem; font-size: 0.825rem;">
+                <select id="history-status-filter" style="padding: 0.45rem 0.75rem; font-size: 0.825rem;">
+                  <option value="all">All Statuses</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Awaiting Review">Awaiting Review</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="data-table-wrapper">
+              <table class="table-clean">
+                <thead>
+                  <tr>
+                    <th>Assessment ID</th>
+                    <th>Patient Name</th>
+                    <th>Age</th>
+                    <th>Sex</th>
+                    <th>Intake Method</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Report</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="history-table-tbody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================================================================
+             VIEW 4: PATIENTS DIRECTORY
+             ================================================================== -->
+        <section id="view-patients" class="view-panel">
+          <div class="card">
+            <div class="card-header-flex">
+              <div>
+                <h3 class="card-title">Patient Records Directory</h3>
+                <p class="card-subtitle">Registered subjects and associated evaluation histories.</p>
+              </div>
+              <input type="text" id="patients-search-input" placeholder="Search patients..." style="width: 220px; padding: 0.45rem 0.75rem; font-size: 0.825rem;">
+            </div>
+
+            <div class="data-table-wrapper">
+              <table class="table-clean">
+                <thead>
+                  <tr>
+                    <th>Patient Name / ID</th>
+                    <th>Age</th>
+                    <th>Sex</th>
+                    <th>Total Assessments</th>
+                    <th>Latest Assessment</th>
+                    <th>Latest Status</th>
+                    <th>Latest ABC</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="patients-table-tbody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================================================================
+             VIEW 5: REPORTS LIBRARY
+             ================================================================== -->
+        <section id="view-reports" class="view-panel">
+          <div class="card">
+            <div class="card-header-flex">
+              <div>
+                <h3 class="card-title">Clinical PDF Reports Library</h3>
+                <p class="card-subtitle">Generated assessment summaries ready for clinical countersignature and export.</p>
+              </div>
+            </div>
+
+            <div class="data-table-wrapper">
+              <table class="table-clean">
+                <thead>
+                  <tr>
+                    <th>Assessment ID</th>
+                    <th>Patient Name</th>
+                    <th>Date Generated</th>
+                    <th>PDF Filename</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="reports-table-tbody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================================================================
+             VIEW 6: ANALYTICS & POPULATION INSIGHTS
+             ================================================================== -->
+        <section id="view-analytics" class="view-panel">
+          <div class="card">
+            <h3 class="card-title">Assessment Analytics & Clinical Metrics</h3>
+            <p class="card-subtitle">Aggregate summary of intake modalities, scoring scatter, and evaluation velocity.</p>
+
+            <div class="kpi-grid" style="margin-top: 1.5rem;">
+              <div class="kpi-card">
+                <span class="kpi-title">Completed Scored Evals</span>
+                <div class="kpi-val" id="analytics-completed-val">—</div>
+                <div class="kpi-footer">Sample size for domain statistics</div>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-title">Manual vs Upload Ratio</span>
+                <div class="kpi-val" id="analytics-ratio-val">—</div>
+                <div class="kpi-footer">Intake modality split</div>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-title">Mean ABC Composite</span>
+                <div class="kpi-val" id="analytics-mean-abc-val">—</div>
+                <div class="kpi-footer">Standard score (Mean = 100)</div>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-title">Clinical Reports Built</span>
+                <div class="kpi-val" id="analytics-reports-val">—</div>
+                <div class="kpi-footer">PDF export completion</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+              <h4 style="color: var(--text-main); margin-bottom: 0.75rem;">Domain Standard Score Means (Completed Sample)</h4>
+              <div id="analytics-domain-bars-container">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================================================================
+             VIEW 7: SETTINGS
+             ================================================================== -->
+        <section id="view-settings" class="view-panel">
+          <div class="card" style="max-width: 800px;">
+            <h3 class="card-title">System Settings & Clinician Profile</h3>
+            <p class="card-subtitle">Configure evaluation preferences, API connectivity, and clinician credentials.</p>
+
+            <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+              <div class="form-group">
+                <label>Evaluating Clinician Name</label>
+                <input type="text" id="setting-clinician-name" value="Dr. Talha Rehman, Clinical Neuropsychologist">
+              </div>
+
+              <div class="form-group">
+                <label>License / Clinical Credential ID</label>
+                <input type="text" id="setting-license-id" value="PSY-94821-CLINICAL">
+              </div>
+
+              <div class="form-group">
+                <label>AI Interpretation Engine</label>
+                <select id="setting-ai-mode">
+                  <option value="groq">Groq LLM (llama-3.3-70b-versatile with DSM-5-TR knowledge base)</option>
+                  <option value="offline" selected>Deterministic Offline Evidence Synthesis (100% Local / Zero Latency)</option>
+                </select>
+                <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                  When cloud API keys are absent, Autism Lens automatically engages its deterministic clinical synthesis engine.
+                </span>
+              </div>
+
+              <div class="form-group">
+                <label>API Base URL</label>
+                <input type="text" id="setting-api-url" value="" readonly style="background-color: var(--border-subtle);">
+              </div>
+
+              <div style="display: flex; gap: 0.75rem; margin-top: 0.5rem;">
+                <button type="button" class="btn btn-primary" onclick="App.saveSettings();">
+                  💾 Save Preferences
+                </button>
+                <button type="button" class="btn btn-outline" onclick="App.resetSettings();">
+                  Reset Defaults
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================================================================
+             VIEW 8: HELP & DOCUMENTATION
+             ================================================================== -->
+        <section id="view-help" class="view-panel">
+          <div class="card" style="max-width: 850px;">
+            <h3 class="card-title">Pearson Vineland-3 & DSM-5-TR Clinical Reference</h3>
+            <p class="card-subtitle">Comprehensive guide to normative tables, domain scatter, and ASD pattern classifications.</p>
+
+            <div style="margin-top: 1.5rem; line-height: 1.6; font-size: 0.875rem;">
+              <h4 style="color: var(--text-main); margin-bottom: 0.4rem;">1. Normative Lookup Methodology (Appendix B)</h4>
+              <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                Autism Lens uses official Pearson Comprehensive Interview Form normative tables. Table B.1 converts subdomain raw scores (0 to maximum) to v-scale scores (Mean = 15, SD = 3). Table B.3 maps sums of v-scale scores to Domain Standard Scores (Mean = 100, SD = 15) and sum of domain scores to the Adaptive Behavior Composite (ABC).
+              </p>
+
+              <h4 style="color: var(--text-main); margin-bottom: 0.4rem;">2. DSM-5-TR ASD Pattern Engine Rules</h4>
+              <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                Adaptive behavior profiles are cross-referenced with DSM-5-TR Criteria A (social communication deficits) and B (restricted/repetitive patterns). The Classic ASD profile is identified when Socialization is lowest, followed by Communication, with Daily Living relatively preserved and Motor skills intact.
+              </p>
+
+              <h4 style="color: var(--text-main); margin-bottom: 0.4rem;">3. Clinical Limitations & Ethical Safeguards</h4>
+              <p style="color: var(--text-secondary);">
+                Adaptive behavior assessment measures everyday functional performance reported by informants. It does not replace direct clinical interaction (e.g. ADOS-2) or developmental history interviews. Generated reports must be reviewed and countersigned before clinical use.
+              </p>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Backdrop Overlay -->
+  <div id="app-backdrop" class="app-backdrop" onclick="App.closeMobileSidebar();"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Accessible Clinical Confirmation Modal -->
+  <div id="confirm-modal" class="modal-backdrop" style="display: none;" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-title" class="modal-title">Confirm Action</h3>
+        <button type="button" class="modal-close-btn" onclick="Modal.close();" aria-label="Close modal">&times;</button>
+      </div>
+      <div id="modal-body" class="modal-body">
+        Are you sure you wish to proceed?
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="modal-cancel-btn" class="btn btn-outline btn-sm" onclick="Modal.close();">Cancel</button>
+        <button type="button" id="modal-confirm-btn" class="btn btn-primary btn-sm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/visualizations.js"></script>
+  <script src="/static/js/workflow.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

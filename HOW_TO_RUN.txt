@@ -1,28 +1,38 @@
-VINELAND-3 ASSESSMENT SYSTEM
-==============================
-Final Version - Official Pearson Norms
-Developed for Academic Research Use
+AUTISM LENS CLINICAL DECISION-SUPPORT SYSTEM (v2.0)
+===================================================
+Final Version - Official Pearson Normative Tables (VABS-3) & DSM-5-TR Engine
 
-HOW TO RUN:
-1. Extract this folder to your Desktop
-2. Double-click START_APP.bat
-3. If Windows shows a blue security warning:
-   Click "More info" then "Run anyway"
-   (Normal for unsigned academic software)
-4. Wait 10-15 seconds
-   Your browser opens automatically
+HOW TO DIRECTLY START THE APP:
+------------------------------
 
-SCORING INFORMATION:
-Scores are calculated using official Pearson
-VABS-3 normative tables (Appendix B).
-Used under departmental license.
+▶ ON LINUX (YOUR CURRENT SYSTEM):
+   Open a terminal in this folder and run:
+       ./start_app.sh
 
-REQUIREMENTS:
-- Internet connection for AI interpretation
-- Google Chrome or Microsoft Edge recommended
+   OR directly with Python:
+       /home/talha/.venv/bin/python run.py
 
-IMPORTANT DISCLAIMER:
-This system is for academic research purposes.
-All AI-generated narratives require review and
-countersignature by a licensed clinician before
-any clinical or diagnostic use.
+   Your browser will automatically open at:
+   http://127.0.0.1:5050
+
+▶ ON WINDOWS:
+   Double-click:
+       START_APP.bat
+
+   Your browser will automatically open at:
+   http://127.0.0.1:5050
+
+WORKFLOW:
+---------
+1. Step 1: Patient Information (Manual entry or Document import)
+2. Step 2: Document Upload (PDF or Evaluation Sheet Image)
+3. Step 3: Input Verification Gate (Review & edit fields before scoring)
+4. Step 4: Run Scoring Engine (Deterministic Pearson VABS-3 norms)
+5. Step 5: Visualizations & Maps (Domain bar charts, percentiles, ASD patterns)
+6. Step 6: Generate Clinical Report (8-section interpretation narrative)
+7. Step 7: Preview & Download PDF (Publication-grade ReportLab report)
+
+API DOCUMENTATION & TESTING:
+----------------------------
+Run tests anytime:
+   PYTHONPATH=. /home/talha/.venv/bin/pytest -v backend/tests
